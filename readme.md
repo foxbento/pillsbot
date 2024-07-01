@@ -1,0 +1,1 @@
+This is a sloppy personal project i rushed to track my pills on telegram. better examples of my work exist on my work github ^^
