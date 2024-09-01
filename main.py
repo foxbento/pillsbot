@@ -6,9 +6,9 @@ from telegram.ext import Application, CommandHandler, CallbackQueryHandler, Mess
 from supabase import create_client, Client
 
 # Load environment variables
-SUPABASE_URL = os.environ.get('SUPABASE_URL')
-SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
-BOT_TOKEN = os.environ.get('BOT_TOKEN')
+SUPABASE_URL = os.getenv('SUPABASE_URL')
+SUPABASE_KEY = os.getenv('SUPABASE_KEY')
+BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 # Check for missing environment variables
 missing_vars = []
