@@ -5,6 +5,10 @@ import pytz
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, ContextTypes, filters
 from supabase import create_client, Client
+from dotenv import load_dotenv
+
+# Try to load environment variables from .env file
+load_dotenv()
 
 def check_env_vars():
     required_vars = ['SUPABASE_URL', 'SUPABASE_KEY', 'BOT_TOKEN']
