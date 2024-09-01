@@ -1,20 +1,28 @@
 import os
 import datetime
 import pytz
-from dotenv import load_dotenv
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, ContextTypes, filters
 from supabase import create_client, Client
-
-load_dotenv()
 
 # Load environment variables
 SUPABASE_URL = os.environ.get('SUPABASE_URL')
 SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
 
-if not all([SUPABASE_URL, SUPABASE_KEY, BOT_TOKEN]):
-    raise ValueError("Missing required environment variables")
+# Check for missing environment variables
+missing_vars = []
+if not SUPABASE_URL:
+    missing_vars.append("SUPABASE_URL")
+if not SUPABASE_KEY:
+    missing_vars.append("SUPABASE_KEY")
+if not BOT_TOKEN:
+    missing_vars.append("BOT_TOKEN")
+
+if missing_vars:
+    print(f"Error: Missing required environment variables: {', '.join(missing_vars)}")
+    print("Please set these variables in your Railway project settings.")
+    exit(1)
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
@@ -122,6 +130,7 @@ def get_counts_text(user) -> str:
     return "\n".join(f"{name}: {counts[i] if i < len(counts) else 0}" for i, name in enumerate(user['tablet_names']))
 
 def main() -> None:
+    print("Starting the Telegram Bot...")
     application = Application.builder().token(BOT_TOKEN).build()
 
     # Add handlers
@@ -133,6 +142,7 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_new_tablet))
 
     # Start the bot
+    print("Bot is now running. Press Ctrl-C to stop.")
     application.run_polling()
 
 if __name__ == "__main__":
