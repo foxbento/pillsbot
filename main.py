@@ -1,9 +1,12 @@
 import os
 import datetime
 import pytz
+from dotenv import load_dotenv
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, ContextTypes, filters
 from supabase import create_client, Client
+
+load_dotenv()
 
 # Load environment variables
 SUPABASE_URL = os.environ.get('SUPABASE_URL')
