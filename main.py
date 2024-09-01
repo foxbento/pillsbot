@@ -1,28 +1,38 @@
 import os
+import sys
 import datetime
 import pytz
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, ContextTypes, filters
 from supabase import create_client, Client
 
+def check_env_vars():
+    required_vars = ['SUPABASE_URL', 'SUPABASE_KEY', 'BOT_TOKEN']
+    missing_vars = [var for var in required_vars if var not in os.environ]
+    
+    if missing_vars:
+        print(f"Error: Missing required environment variables: {', '.join(missing_vars)}")
+        print("Please set these variables in your Railway project settings.")
+        print("\nDebug Information:")
+        print(f"Python version: {sys.version}")
+        print("Environment variables:")
+        for var in os.environ:
+            if not var.startswith(('SUPABASE', 'BOT')):  # Don't print sensitive data
+                print(f"  {var}: {os.environ.get(var)}")
+        return False
+    return True
+
 # Load environment variables
-SUPABASE_URL = os.getenv('SUPABASE_URL')
-SUPABASE_KEY = os.getenv('SUPABASE_KEY')
-BOT_TOKEN = os.getenv('BOT_TOKEN')
+SUPABASE_URL = os.environ.get('SUPABASE_URL')
+SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
+BOT_TOKEN = os.environ.get('BOT_TOKEN')
 
-# Check for missing environment variables
-missing_vars = []
-if not SUPABASE_URL:
-    missing_vars.append("SUPABASE_URL")
-if not SUPABASE_KEY:
-    missing_vars.append("SUPABASE_KEY")
-if not BOT_TOKEN:
-    missing_vars.append("BOT_TOKEN")
+if not check_env_vars():
+    sys.exit(1)
 
-if missing_vars:
-    print(f"Error: Missing required environment variables: {', '.join(missing_vars)}")
-    print("Please set these variables in your Railway project settings.")
-    exit(1)
+print(f"SUPABASE_URL: {SUPABASE_URL[:10]}...")  # Print first 10 chars for security
+print(f"SUPABASE_KEY: {SUPABASE_KEY[:10]}...")  # Print first 10 chars for security
+print(f"BOT_TOKEN: {BOT_TOKEN[:10]}...")  # Print first 10 chars for security
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
